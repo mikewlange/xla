@@ -2164,6 +2164,14 @@ at::Tensor AtenXlaType::prod(const at::Tensor& self, int64_t dim, bool keepdim,
       XLATensor::prod(bridge::GetXlaTensor(self), {dim}, keepdim, dtype));
 }
 
+at::Tensor& AtenXlaType::put_(at::Tensor& self, const at::Tensor& index,
+                              const at::Tensor& source, bool accumulate) {
+  XLATensor self_tensor = bridge::GetXlaTensor(self);
+  XLATensor::put_(self_tensor, bridge::GetXlaTensor(index),
+                  bridge::GetXlaTensor(source), accumulate);
+  return self;
+}
+
 std::tuple<at::Tensor, at::Tensor> AtenXlaType::qr(const at::Tensor& self,
                                                    bool some) {
   XLA_FN_COUNTER("xla::");
@@ -2242,7 +2250,9 @@ at::Tensor AtenXlaType::repeat(const at::Tensor& self,
       bridge::GetXlaTensor(self), XlaHelpers::I64List(repeats)));
 }
 
-at::Tensor& AtenXlaType::resize_(at::Tensor& self, at::IntArrayRef size) {
+at::Tensor& AtenXlaType::resize_(
+    at::Tensor& self, at::IntArrayRef size,
+    c10::optional<at::MemoryFormat> /* memory_format */) {
   XLA_FN_COUNTER("xla::");
   XLATensor self_tensor = bridge::GetXlaTensor(self);
   XLATensor::resize_(self_tensor, XlaHelpers::I64List(size));
@@ -2628,6 +2638,12 @@ at::Tensor& AtenXlaType::t_(at::Tensor& self) {
   XLATensor self_tensor = bridge::GetXlaTensor(self);
   XLATensor::transpose_(self_tensor, 0, 1);
   return self;
+}
+
+at::Tensor AtenXlaType::take(const at::Tensor& self, const at::Tensor& index) {
+  XLA_FN_COUNTER("xla::");
+  return bridge::AtenFromXlaTensor(
+      XLATensor::take(bridge::GetXlaTensor(self), bridge::GetXlaTensor(index)));
 }
 
 at::Tensor AtenXlaType::tan(const at::Tensor& self) {
