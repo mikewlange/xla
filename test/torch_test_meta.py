@@ -10,6 +10,7 @@ disabled_torch_tests = {
     'test_sum_cpu_device_mismatch',  # doesn't raise
     'test_solve_methods_arg_device',  # doesn't raise
     'test_min_max_nan',
+    'test_min_max_binary_op_nan',
     'test_copy_noncontig',
     'test_copy_broadcast',
 
@@ -102,7 +103,9 @@ disabled_torch_tests = {
     'test_masked_select',  # uses half
     'test_masked_fill_bool_tensor',  # lowering
     'test_lu',
-    'test_logical_xor',  # storage
+    'test_logical_and',  # uses half
+    'test_logical_or',  # uses half
+    'test_logical_xor',  # uses half
     'test_logical',  # uses half
     'test_logical_not',  # uses half
     'test_is_signed',  # uses half
